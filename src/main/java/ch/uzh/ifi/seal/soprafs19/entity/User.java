@@ -11,21 +11,21 @@ import javax.persistence.Id;
 
 @Entity
 public class User implements Serializable {
-	
+
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue
 	private Long id;
-	
-	@Column(nullable = false) 
-	private String name;
-	
-	@Column(nullable = false, unique = true) 
+
+	@Column(nullable = false)
 	private String username;
-	
-	@Column(nullable = false, unique = true) 
+
+	@Column(nullable = false, unique = true)
+	private String password;
+
+	@Column(nullable = false, unique = true)
 	private String token;
 
 	@Column(nullable = false)
@@ -39,20 +39,20 @@ public class User implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getUsername() {
 		return username;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getToken() {
@@ -70,6 +70,7 @@ public class User implements Serializable {
 	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
+
 
 	@Override
 	public boolean equals(Object o) {
