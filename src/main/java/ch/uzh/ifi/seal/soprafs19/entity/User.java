@@ -26,6 +26,12 @@ public class User implements Serializable {
 	private String password;
 
 	@Column(nullable = false, unique = true)
+	private String currdate;
+
+	@Column(nullable = false, unique = true)
+	private String birthday;
+
+	@Column(nullable = false, unique = true)
 	private String token;
 
 	@Column(nullable = false)
@@ -53,6 +59,22 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getCurrdate() {
+		return currdate;
+	}
+
+	public void setCurrdate(String currdate) {
+		this.currdate = currdate;
+	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
 	}
 
 	public String getToken() {
