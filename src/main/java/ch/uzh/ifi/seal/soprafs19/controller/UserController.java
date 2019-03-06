@@ -21,11 +21,13 @@ public class UserController {
         return service.getUsers();
     }
 
-    @GetMapping("/test/{username}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    boolean bool(@PathVariable String username) {
-        return service.existsUsername(username);
-
+    @PostMapping("/logcheck")
+    User checkPWandName(@RequestBody User newUser) {
+        String username = newUser.getUsername();
+        String password = newUser.getPassword();
+        if ((this.service.findUserByUsername(username)==null)||
+           (!this.service.findUserByUsername(username).getPassword().equals(password))) throw new UserAlreadyExists();
+        else return this.service.findUserByUsername(username);
     }
 
     @DeleteMapping("/users/{id}")
@@ -41,7 +43,7 @@ public class UserController {
     @PostMapping("/users")
     User createUser(@RequestBody User newUser) {
         String username = newUser.getUsername();
-        if (this.service.findUserByUsername(username)!=null){return null;} //throw new UserAlreadyExists();
+        if (this.service.findUserByUsername(username)!=null) throw new UserAlreadyExists();
         else return this.service.createUser(newUser);
     }
 }
