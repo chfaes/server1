@@ -36,7 +36,8 @@ public class UserController {
             throw new UserAlreadyExists();
         else
             //this.service.findUserByUsername(username).setToken(UUID.randomUUID().toString());
-            //this.service.findUserByUsername(username).setStatus(UserStatus.ONLINE);
+            this.service.findUserByUsername(username).setStatus(UserStatus.ONLINE);
+            this.service.saveLogin(this.service.findUserByUsername(username));
             return this.service.findUserByUsername(username);
     }
 
@@ -50,6 +51,15 @@ public class UserController {
         User user = this.service.getUser(id);
         if (user == null) throw new UserNotFound();
         else return user;
+    }
+
+    @PostMapping("/logout/{username}")
+    @CrossOrigin
+    User logOutUser(@PathVariable String username) {
+        User user = this.service.findUserByUsername(username);
+        user.setStatus(UserStatus.OFFLINE);
+        this.service.saveLogout(user);
+        return user;
     }
 
     @PutMapping("/users/{id}")

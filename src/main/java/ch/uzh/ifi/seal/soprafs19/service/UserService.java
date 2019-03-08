@@ -54,6 +54,14 @@ public class UserService {
         return originalUser;
     }
 
+    public void saveLogout(User user){
+        this.userRepository.save(user);
+    }
+
+    public void saveLogin(User user){
+        this.userRepository.save(user);
+    }
+
     public void deleteUser(long id){
         this.userRepository.findById(id);
     }
