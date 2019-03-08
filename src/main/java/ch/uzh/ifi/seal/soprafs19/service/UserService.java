@@ -38,6 +38,22 @@ public class UserService {
         return this.userRepository.findById(id);
     }
 
+    public User updateUser(long id, User updatedUser) {
+        User originalUser = getUser(id);
+        String username = updatedUser.getUsername();
+        String birthday = updatedUser.getBirthday();
+
+        if(!username.equals(originalUser.getUsername()) && updatedUser.getUsername() != null) {
+            originalUser.setUsername(username);
+        }
+        if(!birthday.equals(originalUser.getBirthday()) && updatedUser.getBirthday() != null) {
+            originalUser.setBirthday(birthday);
+        }
+
+        this.userRepository.save(originalUser);
+        return originalUser;
+    }
+
     public void deleteUser(long id){
         this.userRepository.findById(id);
     }
