@@ -39,11 +39,33 @@ public class UserServiceTest {
         User testUser = new User();
         testUser.setUsername("testUsername");
         testUser.setPassword("testPassword");
+        testUser.setBirthday("testBirthday");
+        testUser.setCurrdate("testcurrDate");
 
         User createdUser = userService.createUser(testUser);
 
         Assert.assertNotNull(createdUser.getToken());
-        Assert.assertEquals(createdUser.getStatus(),UserStatus.ONLINE);
+        Assert.assertEquals(createdUser.getStatus(),UserStatus.OFFLINE);
         Assert.assertEquals(createdUser, userRepository.findByToken(createdUser.getToken()));
+    }
+
+    @Test
+    public void updateUser() {
+        Assert.assertNotNull(userRepository.findByUsername("testUsername"));
+
+        User testUser = new User(); //userRepository.findByUsername("testUsername");
+        testUser.setUsername("testUsername");
+        testUser.setPassword("testPassword");
+        testUser.setBirthday("testBirthday");
+        testUser.setCurrdate("testcurrDate");
+
+        User updatedUser = new User();
+        updatedUser.setUsername("NewName");
+        updatedUser.setBirthday("NewBirthday");
+
+        testUser = userService.updateUser(testUser.getId(), updatedUser);
+
+        Assert.assertEquals(testUser.getUsername(), updatedUser.getUsername());
+        Assert.assertEquals(testUser.getBirthday(), updatedUser.getBirthday());
     }
 }

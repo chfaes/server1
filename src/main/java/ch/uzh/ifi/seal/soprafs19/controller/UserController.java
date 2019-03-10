@@ -53,10 +53,10 @@ public class UserController {
         else return user;
     }
 
-    @PostMapping("/logout/{username}")
+    @PostMapping("/logout/{id}")
     @CrossOrigin
-    User logOutUser(@PathVariable String username) {
-        User user = this.service.findUserByUsername(username);
+    User logOutUser(@PathVariable long id) {
+        User user = this.service.getUser(id);
         user.setStatus(UserStatus.OFFLINE);
         this.service.saveLogout(user);
         return user;
@@ -64,6 +64,7 @@ public class UserController {
 
     @PutMapping("/users/{id}")
     @CrossOrigin
+    @ResponseStatus(value=HttpStatus.NO_CONTENT)
     User putid(@PathVariable long id, @RequestBody User updatedUser) {
         User user = this.service.getUser(id);
         if (user == null) throw new UserNotFound();
@@ -72,6 +73,7 @@ public class UserController {
 
     @PostMapping("/users")
     @NotBlank //Soll angeblich verhindern, dass man mit leerem Userinput hier anklopfen kann.
+    @ResponseStatus(value=HttpStatus.CREATED)
     User createUser(@RequestBody User newUser) {
         String username = newUser.getUsername();
         if (this.service.findUserByUsername(username)!=null) throw new UserAlreadyExists();
