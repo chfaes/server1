@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestParam;
 import ch.uzh.ifi.seal.soprafs19.controller.UserAlreadyExists;
+import ch.uzh.ifi.seal.soprafs19.controller.UserNotFound;
 
 /**
  * Test class for the UserResource REST resource.
@@ -70,12 +71,11 @@ public class UserControllerTest {
 
         Assert.assertNull(userRepository.findByUsername("testUser1cUN"));
         Assert.assertNotEquals("/users/"+userRepository.findByUsername("testUser1cUN").getId().toString(),returnString1b);
-
-
     }
     @Test
     public void checkCorrectPWandName() {
         Assert.assertNull(userRepository.findByUsername("testUser2UN"));
+
         User testUser2 = new User();
         testUser2.setUsername("testUser2UN");
         testUser2.setPassword("testUser2PW");
@@ -93,46 +93,164 @@ public class UserControllerTest {
         Assert.assertEquals(returnUser.getPassword(), testUser2.getPassword());
         Assert.assertEquals(returnUser.getPassword(), testUser3.getPassword());
 
-    }/*
-    @Test
-    public void checkcorrectPWwrongName() {
-        userController.checkPWandName();
     }
-    @Test
-    public void checkwrongPWcorrectName() {
-        userController.checkPWandName();
+    @Test(expected = UserAlreadyExists.class)
+    public void checkCorrectPWwrongName() {
+        Assert.assertNull(userRepository.findByUsername("testUser2bUN"));
+
+        User testUser2b = new User();
+        testUser2b.setUsername("testUser2bUN");
+        testUser2b.setPassword("testUser2bPW");
+        testUser2b.setBirthday("testUser2bBD");
+        testUser2b.setCurrdate("testUser2bCD");
+        userController.createUser(testUser2b);
+        User testUser3b = new User();
+        testUser3b.setUsername("NotUsername");
+        testUser3b.setPassword("testUser2PW");
+
+        User returnUser = userController.checkPWandName(testUser3b); //Routine under Test
+
+        Assert.assertNotEquals(returnUser.getUsername(), testUser2b.getUsername());
+        Assert.assertNotEquals(returnUser.getUsername(), testUser3b.getUsername());
     }
-    @Test
-    public void checkemptyPWandName() {
-        userController.checkPWandName();
+    @Test(expected = UserAlreadyExists.class)
+    public void checkWrongPWcorrectName() {
+        Assert.assertNull(userRepository.findByUsername("testUser2cUN"));
+
+        User testUser2c = new User();
+        testUser2c.setUsername("testUser2cUN");
+        testUser2c.setPassword("testUser2cPW");
+        testUser2c.setBirthday("testUser2cBD");
+        testUser2c.setCurrdate("testUser2cCD");
+        userController.createUser(testUser2c);
+        User testUser3c = new User();
+        testUser3c.setUsername("testUser2cUN");
+        testUser3c.setPassword("NotPassword");
+
+        User returnUser = userController.checkPWandName(testUser3c); //Routine under Test
+
+        Assert.assertNotEquals(returnUser.getUsername(), testUser2c.getPassword());
+        Assert.assertNotEquals(returnUser.getUsername(), testUser3c.getPassword());
+    }
+    @Test(expected = UserAlreadyExists.class)
+    public void checkEmptyPWandName() {
+        Assert.assertNull(userRepository.findByUsername("testUser2dUN"));
+
+        User testUser2d = new User();
+        testUser2d.setUsername("testUser2dUN");
+        testUser2d.setPassword("testUser2dPW");
+        testUser2d.setBirthday("testUser2dBD");
+        testUser2d.setCurrdate("testUser2dCD");
+        userController.createUser(testUser2d);
+        User testUser3d = new User();
+
+        User returnUser = userController.checkPWandName(testUser3d); //Routine under Test
+
+        Assert.assertEquals(returnUser, null);
     }
     @Test
     public void getUser() {
-        userController.getUser();
+        Assert.assertNull(userRepository.findByUsername("testUser4UN"));
+
+        User testUser4 = new User();
+        testUser4.setUsername("testUser4UN");
+        testUser4.setPassword("testUser4PW");
+        testUser4.setBirthday("testUser4BD");
+        testUser4.setCurrdate("testUser4CD");
+        userController.createUser(testUser4);
+        long id = userRepository.findByUsername("testUser4UN").getId();
+
+        User returnUser = userController.getUser(id); //Routine under Test: getUser()
+
+        String id_str = ""+id; //conversion to check returned User id with this
+        Assert.assertEquals(returnUser.getUsername(), "testUser4UN");
+        Assert.assertEquals(returnUser.getId().toString(), id_str);
     }
-    @Test
+    @Test(expected = UserNotFound.class)
     public void getNonExistentUser() {
-        userController.getUser();
+        Assert.assertNull(userRepository.findByUsername("testUser5UN"));
+
+        User testUser5 = new User();
+        testUser5.setUsername("testUser5UN");
+        testUser5.setPassword("testUser5PW");
+        testUser5.setBirthday("testUser5BD");
+        testUser5.setCurrdate("testUser5CD");
+        userController.createUser(testUser5);
+        long id = userRepository.findByUsername("testUser5UN").getId()+1000;
+
+        User returnUser = userController.getUser(id); //Routine under Test
+
+        Assert.assertNull(userRepository.findById(id));
+        Assert.assertNull(returnUser);
     }
     @Test
     public void logoutUser() {
-        userController.logOutUser();
+        Assert.assertNull(userRepository.findByUsername("testUser6UN"));
+
+        User testUser6 = new User();
+        testUser6.setUsername("testUser6UN");
+        testUser6.setPassword("testUser6PW");
+        testUser6.setBirthday("testUser6BD");
+        testUser6.setCurrdate("testUser6CD");
+        userController.createUser(testUser6);
+        long id = userRepository.findByUsername("testUser6UN").getId();
+
+        User returnUser = userController.logOutUser(id); //Routine under Test
+
+        String id_str = ""+id;
+        Assert.assertEquals(returnUser.getId().toString(), id_str);
+        Assert.assertEquals(returnUser.getUsername(), "testUser6UN");
+        Assert.assertEquals(userRepository.findByUsername("testUser6UN").getStatus(), UserStatus.OFFLINE);
+
     }
-    @Test
+    @Test(expected = UserNotFound.class)
     public void logoutNonExistentUser() {
-        userController.logOutUser();
+        Assert.assertNull(userRepository.findById(0));
+
+        User returnUser = userController.logOutUser(0); //Routine under Test
+
+        Assert.assertNull(userRepository.findById(0));
+        Assert.assertNull(returnUser);
     }
     @Test
     public void updateUser() {
-        userController.putid();
+        Assert.assertNull(userRepository.findByUsername("testUser7UN"));
+        Assert.assertNull(userRepository.findByUsername("testUser8UN"));
+
+        User testUser7 = new User();
+        testUser7.setUsername("testUser7UN");
+        testUser7.setPassword("testUser7PW");
+        testUser7.setBirthday("testUser7BD");
+        testUser7.setCurrdate("testUser7CD");
+        userController.createUser(testUser7);
+        long id = userRepository.findByUsername("testUser7UN").getId();
+        User testUser8 = new User();
+        testUser8.setUsername("testUser8UN");
+        testUser8.setPassword("testUser8PW");
+        testUser8.setBirthday("testUser8BD");
+        testUser8.setCurrdate("testUser8CD");
+
+        User returnUser = userController.putid(id, testUser8);
+
+        Assert.assertEquals(returnUser.getUsername(), "testUser8UN");
+        Assert.assertEquals(returnUser.getPassword(), "testUser7PW");
+        Assert.assertEquals(returnUser.getBirthday(), "testUser8BD");
+        Assert.assertEquals(returnUser.getCurrdate(), "testUser7CD");
+
     }
-    @Test
+    @Test(expected = UserNotFound.class)
     public void updateNonExistentUser() {
-        userController.putid();
+        Assert.assertNull(userRepository.findById(0));
+
+        User testUser9 = new User();
+        testUser9.setUsername("testUser9UN");
+        testUser9.setPassword("testUser9PW");
+        testUser9.setBirthday("testUser9BD");
+        testUser9.setCurrdate("testUser9CD");
+
+        userController.putid(0, testUser9);
+
+        Assert.assertNull(userRepository.findById(0));
     }
-    @Test
-    public void updateWithEmptyInputUser() {
-        userController.putid();
-    }*/
 }
 
