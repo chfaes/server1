@@ -7,8 +7,10 @@ import ch.uzh.ifi.seal.soprafs19.service.UserService;
 import ch.uzh.ifi.seal.soprafs19.controller.UserAlreadyExists;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.DenyAll;
 import javax.validation.constraints.NotBlank;
 import java.util.Hashtable;
 import java.util.UUID;
@@ -28,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/logcheck")
-    User checkPWandName(@RequestBody User newUser) {
+    public User checkPWandName(@RequestBody User newUser) {
         String username = newUser.getUsername();
         String password = newUser.getPassword();
         if ((this.service.findUserByUsername(username)==null)||
@@ -47,16 +49,18 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    User getUser( @PathVariable long id) {
+    public User getUser( @PathVariable long id) {
         User user = this.service.getUser(id);
         if (user == null) throw new UserNotFound();
         else return user;
     }
 
-    @PostMapping("/logout/{id}")
+    @GetMapping("/logout/{id}")
     @CrossOrigin
-    User logOutUser(@PathVariable long id) {
+    public User logOutUser(@PathVariable long id) {
         User user = this.service.getUser(id);
+        if (user == null) throw new UserNotFound();
+        else
         user.setStatus(UserStatus.OFFLINE);
         this.service.saveLogout(user);
         return user;
@@ -65,7 +69,7 @@ public class UserController {
     @PutMapping("/users/{id}")
     @CrossOrigin
     @ResponseStatus(value=HttpStatus.NO_CONTENT)
-    User putid(@PathVariable long id, @RequestBody User updatedUser) {
+    public User putid(@PathVariable long id, @RequestBody User updatedUser) {
         User user = this.service.getUser(id);
         if (user == null) throw new UserNotFound();
         else return this.service.updateUser(id, updatedUser);
@@ -74,10 +78,13 @@ public class UserController {
     @PostMapping("/users")
     @NotBlank //Soll angeblich verhindern, dass man mit leerem Userinput hier anklopfen kann.
     @ResponseStatus(value=HttpStatus.CREATED)
-    User createUser(@RequestBody User newUser) {
+    public String createUser(@RequestBody User newUser) {
         String username = newUser.getUsername();
-        if (this.service.findUserByUsername(username)!=null) throw new UserAlreadyExists();
-        else
-            return this.service.createUser(newUser);
+        if (this.service.findUserByUsername(username) != null) throw new UserAlreadyExists();
+        else{
+            User UserCreated = this.service.createUser(newUser);
+            String String1 = "/users/"+ UserCreated.getId().toString();
+            return String1;
+        }
     }
 }

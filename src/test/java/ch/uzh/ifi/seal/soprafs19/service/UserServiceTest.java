@@ -51,21 +51,24 @@ public class UserServiceTest {
 
     @Test
     public void updateUser() {
-        Assert.assertNotNull(userRepository.findByUsername("testUsername"));
+        Assert.assertNull(userRepository.findByUsername("testUsername2"));
 
-        User testUser = new User(); //userRepository.findByUsername("testUsername");
-        testUser.setUsername("testUsername");
-        testUser.setPassword("testPassword");
-        testUser.setBirthday("testBirthday");
-        testUser.setCurrdate("testcurrDate");
+        User testUser2 = new User();
+        testUser2.setUsername("testUsername2");
+        testUser2.setPassword("testPassword2");
+        testUser2.setBirthday("testBirthday2");
+        testUser2.setCurrdate("testcurrDate2");
+
+        User createdUser2 = userService.createUser(testUser2);
 
         User updatedUser = new User();
         updatedUser.setUsername("NewName");
         updatedUser.setBirthday("NewBirthday");
 
-        testUser = userService.updateUser(testUser.getId(), updatedUser);
+        User testUser2updated = userService.updateUser(createdUser2.getId(), updatedUser);
 
-        Assert.assertEquals(testUser.getUsername(), updatedUser.getUsername());
-        Assert.assertEquals(testUser.getBirthday(), updatedUser.getBirthday());
+        Assert.assertEquals(testUser2updated.getUsername(), updatedUser.getUsername());
+        Assert.assertEquals(testUser2updated.getBirthday(), updatedUser.getBirthday());
+        Assert.assertEquals(testUser2updated.getPassword(), "testPassword2");
     }
 }
