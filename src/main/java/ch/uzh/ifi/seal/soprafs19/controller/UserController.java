@@ -43,10 +43,11 @@ public class UserController {
             return this.service.findUserByUsername(username);
     }
 
+    /*
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)User deleteUser(@PathVariable long id) {this.service.deleteUser(id);
         return null;
-    }
+    }*/
 
     @GetMapping("/users/{id}")
     public User getUser( @PathVariable long id) {

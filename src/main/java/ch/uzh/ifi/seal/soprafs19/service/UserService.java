@@ -30,9 +30,9 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public boolean existsUsername(String username) {
+    /*public boolean existsUsername(String username) {
         return this.userRepository.existsUserByUsername(username);
-    }
+    }*/
 
     public User getUser(long id){
         return this.userRepository.findById(id);
@@ -62,9 +62,9 @@ public class UserService {
         this.userRepository.save(user);
     }
 
-    public void deleteUser(long id){
+    /*public void deleteUser(long id){
         this.userRepository.findById(id);
-    }
+    }*/
 
     public User createUser(User newUser) {
         newUser.setToken(UUID.randomUUID().toString());

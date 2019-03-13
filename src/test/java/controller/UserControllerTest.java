@@ -69,8 +69,8 @@ public class UserControllerTest {
 
         String returnString1b = userController.createUser(testUser1c); //Routine under Test
 
-        Assert.assertNull(userRepository.findByUsername("testUser1cUN"));
-        Assert.assertNotEquals("/users/"+userRepository.findByUsername("testUser1cUN").getId().toString(),returnString1b);
+        Assert.assertNull(returnString1b);
+        Assert.assertEquals(userRepository.findByUsername("testUser1bUN").getPassword(),"testUser1bPW");
     }
     @Test
     public void checkCorrectPWandName() {
@@ -201,7 +201,6 @@ public class UserControllerTest {
         Assert.assertEquals(returnUser.getId().toString(), id_str);
         Assert.assertEquals(returnUser.getUsername(), "testUser6UN");
         Assert.assertEquals(userRepository.findByUsername("testUser6UN").getStatus(), UserStatus.OFFLINE);
-
     }
     @Test(expected = UserNotFound.class)
     public void logoutNonExistentUser() {
