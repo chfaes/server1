@@ -70,10 +70,10 @@ public class UserController {
     @PutMapping("/users/{id}")
     @CrossOrigin
     @ResponseStatus(value=HttpStatus.NO_CONTENT)
-    public User putid(@PathVariable long id, @RequestBody User updatedUser) {
+    public void putid(@PathVariable long id, @RequestBody User updatedUser) {
         User user = this.service.getUser(id);
         if (user == null) throw new UserNotFound();
-        else return this.service.updateUser(id, updatedUser);
+        else this.service.updateUser(id, updatedUser);
     }
 
     @PostMapping("/users")

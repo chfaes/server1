@@ -230,12 +230,12 @@ public class UserControllerTest {
         testUser8.setBirthday("testUser8BD");
         testUser8.setCurrdate("testUser8CD");
 
-        User returnUser = userController.putid(id, testUser8);
+        userController.putid(id, testUser8);
 
-        Assert.assertEquals(returnUser.getUsername(), "testUser8UN");
-        Assert.assertEquals(returnUser.getPassword(), "testUser7PW");
-        Assert.assertEquals(returnUser.getBirthday(), "testUser8BD");
-        Assert.assertEquals(returnUser.getCurrdate(), "testUser7CD");
+        Assert.assertEquals(userRepository.findById(id).getUsername(), "testUser8UN");
+        Assert.assertEquals(userRepository.findById(id).getPassword(), "testUser7PW");
+        Assert.assertEquals(userRepository.findById(id).getBirthday(), "testUser8BD");
+        Assert.assertEquals(userRepository.findById(id).getCurrdate(), "testUser7CD");
 
     }
     @Test(expected = UserNotFound.class)
