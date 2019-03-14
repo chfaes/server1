@@ -194,6 +194,7 @@ public class UserControllerTest {
         testUser6.setCurrdate("testUser6CD");
         userController.createUser(testUser6);
         long id = userRepository.findByUsername("testUser6UN").getId();
+        userRepository.findByUsername("testUser6UN").setStatus(UserStatus.ONLINE);
 
         User returnUser = userController.logOutUser(id); //Routine under Test
 
